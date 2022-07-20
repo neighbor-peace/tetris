@@ -1,3 +1,21 @@
+/*
+TODO
+edge detection
+shape rotation function (page up, page down)
+new shape after collision
+game over when reach the top
+clear row when filled
+  -delete row
+  -unshift new row
+score display
+increase speed with score
+instant drop (space bar)
+
+new color for each shape
+square outlines
+theme select
+*/
+
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 context.scale(20, 20);
@@ -11,7 +29,7 @@ const matrix = [
 ];
 
 const player = {
-  pos: {x: 5, y: 5},
+  pos: {x: 5, y: 0},
   matrix: matrix,
 }
 
@@ -37,8 +55,8 @@ function merge(arena, player) {
 
 function detectCollision(arena, player) {
   const [m, o] = [player.matrix, player.pos];
-  for (let y = 0; y < m.length; ++y) {
-    for (let x = 0; x < m[y].length; ++x) {
+  for (let y = 0; y < m.length; y++) {
+    for (let x = 0; x < m[y].length; x++) {
       if (m[y][x] !== 0 &&
         (arena[y + o.y] &&
         arena[y + o.y][x + o.x]) !== 0) {
@@ -89,18 +107,38 @@ function dropPlayer() {
     player.pos.y--;
     merge(arena, player);
     player.pos.y = 0;
+    player.pos.x = 5;
   }
   dropCounter = 0;
 }
 
+function isOffScreen(player, arena) {
+  console.log('test');
+  const [m, o] = [player.matrix, player.pos];
+  for (let y = 0; y < m.length; y++) {
+    for (let x = 0; x < m[y].length; x++) {
+      //if value is 1, check that it's in bounds
+      //if not, return false
+      if (m[y][x] && (o.x + x < 0 || o.x + x >= arena[0].length)) return true;
+    }
+  }
+  
+  return false;
+}
+
 document.addEventListener('keydown', event => {
-  console.log(event);
   switch (event.code) {
     case "ArrowLeft":
       player.pos.x--;
+      if (isOffScreen(player, arena)) {
+        player.pos.x++;
+      }
       break;
     case "ArrowRight":
       player.pos.x++;
+      if (isOffScreen(player, arena)) {
+        player.pos.x--;
+      }
       break;
     case "ArrowDown":
       dropPlayer();
