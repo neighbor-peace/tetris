@@ -1,8 +1,5 @@
 /*
 TODO
-filled arena edge detection for rotations
--don't allow rotation if it would cause collision
-
 new shape after collision
 game over when reach the top
 clear row when filled
@@ -113,36 +110,6 @@ function dropPlayer() {
   dropCounter = 0;
 }
 
-function isOffScreen(arena, player) {
-  const correction = {
-    axis: null,
-    direction: null
-  }
-  const [m, o] = [player.matrix, player.pos];
-  for (let y = 0; y < m.length; y++) {
-    for (let x = 0; x < m[y].length; x++) {
-      //if value is 1, check that it's in bounds
-      //if not, return false
-      if (m[y][x]) {
-        if (x + o.x < 0) {
-          correction.axis = 'x';
-          correction.direction = 1;
-        } else if (x + o.x >= arena[0].length) {
-          correction.axis = 'x';
-          correction.direction = -1;
-        } else if (y + o.y < 0) {
-          correction.axis = 'y';
-          correction.direction = -1
-        } else if (y + o.y >= arena.length) {
-          correction.axis = 'y';
-          correction.direction = -1
-        }
-      }
-    }
-  }
-  return correction.axis ? correction : false;
-}
-
 function rotate(count) {
   while (count--) {
   const newMatrix = [];
@@ -163,13 +130,13 @@ document.addEventListener('keydown', event => {
   switch (event.code) {
     case "ArrowLeft":
       player.pos.x--;
-      if (isOffScreen(arena, player) || detectCollision(arena, player)) {
+      if (detectCollision(arena, player)) {
         player.pos.x++;
       }
       break;
     case "ArrowRight":
       player.pos.x++;
-      if (isOffScreen(arena, player) || detectCollision(arena, player)) {
+      if (detectCollision(arena, player)) {
         player.pos.x--;
       }
       break;
@@ -177,19 +144,13 @@ document.addEventListener('keydown', event => {
       dropPlayer();
       break;
     case "PageUp": //counter clockwise
-    case "PageDown": { //clockwise
+    case "PageDown": //clockwise
       event.code === "PageUp" ? rotate(3) : rotate(1);
       if (detectCollision(arena, player)) {
         event.code === "PageUp" ? rotate(1) : rotate(3);
       }
-      // let correction = isOffScreen(arena, player);
-      // while (correction) {
-      //   player.pos[correction.axis] += correction.direction;
-      //   correction = isOffScreen(arena, player);
-      // }
       break;
-    }
   }
-})
+});
 
 update()
