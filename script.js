@@ -1,8 +1,5 @@
 /*
 TODO
-fix detect collision x when piece is above screen
-  -take y exception out of function and put it before function call
-increase speed with level
 game over when reach the top
 tetromino preview
 store session leader board in local memory
@@ -64,6 +61,7 @@ function increaseLevel(lineCount) {
   lineCounter += lineCount;
   if (lineCounter >= 10) {
     level.textContent = +level.textContent + 1;
+    dropInterval -= 66; // 1000/15 (15 is highest level)
   }
   lineCounter = lineCounter % 10;
 }
@@ -74,7 +72,6 @@ function increaseScore(lineCount) {
 }
 
 function assignTetromino() {
-  //create array of tetrominos
   const tetrominoArray = [
     [
       [0,0,0],
@@ -112,9 +109,8 @@ function assignTetromino() {
       [0,1,1],
     ]
   ]
-  //return tetromino from random index
-  return tetrominoArray[2];
-  // return tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
+  // return tetrominoArray[2]; //straight piece for testing
+  return tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
 }
 
 function createMatrix(x, y) {
