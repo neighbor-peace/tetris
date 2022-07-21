@@ -1,6 +1,7 @@
 /*
 TODO
-filled arena edge detection 
+filled arena edge detection for rotations
+-don't allow rotation if it would cause collision
 
 new shape after collision
 game over when reach the top
@@ -142,7 +143,8 @@ function isOffScreen(arena, player) {
   return correction.axis ? correction : false;
 }
 
-function rotate() {
+function rotate(count) {
+  while (count--) {
   const newMatrix = [];
   for (let y = 0; y < player.matrix.length; y++) {
     newMatrix.push([]);
@@ -154,6 +156,7 @@ function rotate() {
     }
   }
   player.matrix = newMatrix;
+}
 }
 
 document.addEventListener('keydown', event => {
@@ -173,24 +176,17 @@ document.addEventListener('keydown', event => {
     case "ArrowDown":
       dropPlayer();
       break;
-    case "PageUp": { //counter clockwise
-      for (let i = 1; i <=3; i++) {
-        rotate();
+    case "PageUp": //counter clockwise
+    case "PageDown": { //clockwise
+      event.code === "PageUp" ? rotate(3) : rotate(1);
+      if (detectCollision(arena, player)) {
+        event.code === "PageUp" ? rotate(1) : rotate(3);
       }
-      let correction = isOffScreen(arena, player);
-      while (correction) {
-        player.pos[correction.axis] += correction.direction;
-        correction = isOffScreen(arena, player);
-      }
-      break;
-    }
-    case "PageDown": {//clockwise
-      rotate();
-      let correction = isOffScreen(arena, player);
-      while (correction) {
-        player.pos[correction.axis] += correction.direction;
-        correction = isOffScreen(arena, player);
-      }
+      // let correction = isOffScreen(arena, player);
+      // while (correction) {
+      //   player.pos[correction.axis] += correction.direction;
+      //   correction = isOffScreen(arena, player);
+      // }
       break;
     }
   }
