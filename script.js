@@ -112,7 +112,7 @@ function dropPlayer() {
   dropCounter = 0;
 }
 
-function isOffScreen(player, arena) {
+function isOffScreen(arena, player) {
   const correction = {
     axis: null,
     direction: null
@@ -160,13 +160,13 @@ document.addEventListener('keydown', event => {
   switch (event.code) {
     case "ArrowLeft":
       player.pos.x--;
-      if (isOffScreen(player, arena)) {
+      if (isOffScreen(arena, player) || detectCollision(arena, player)) {
         player.pos.x++;
       }
       break;
     case "ArrowRight":
       player.pos.x++;
-      if (isOffScreen(player, arena)) {
+      if (isOffScreen(arena, player) || detectCollision(arena, player)) {
         player.pos.x--;
       }
       break;
@@ -177,19 +177,19 @@ document.addEventListener('keydown', event => {
       for (let i = 1; i <=3; i++) {
         rotate();
       }
-      let correction = isOffScreen(player, arena);
+      let correction = isOffScreen(arena, player);
       while (correction) {
         player.pos[correction.axis] += correction.direction;
-        correction = isOffScreen(player, arena);
+        correction = isOffScreen(arena, player);
       }
       break;
     }
     case "PageDown": {//clockwise
       rotate();
-      let correction = isOffScreen(player, arena);
+      let correction = isOffScreen(arena, player);
       while (correction) {
         player.pos[correction.axis] += correction.direction;
-        correction = isOffScreen(player, arena);
+        correction = isOffScreen(arena, player);
       }
       break;
     }
