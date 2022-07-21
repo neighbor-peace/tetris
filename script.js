@@ -1,6 +1,7 @@
 /*
 TODO
-score display
+fix detect collision x when piece is above screen
+  -take y exception out of function and put it before function call
 increase speed with score
 game over when reach the top
 tetromino preview
@@ -17,6 +18,7 @@ context.scale(20, 20);
 context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
 const score = document.getElementById('score');
+const level = document.getElementById('level');
 const player = {
   pos: {x: 3, y: 0},
   tetromino: assignTetromino(),
@@ -52,13 +54,23 @@ function clearLines() {
   for (let i = 1; i <= lineCount; i++) {
     arena.unshift(new Array(arena[0].length).fill(0));
   }
-  increaseScore(lineCount)
+  increaseScore(lineCount);
+  increaseLevel(lineCount);
 }
-let level = 1;
+
+let lineCounter = 0;
+function increaseLevel(lineCount) {
+  if (+level.textContent >= 15) return;
+  lineCounter += lineCount;
+  if (lineCounter >= 10) {
+    level.textContent = +level.textContent + 1;
+  }
+  lineCounter = lineCounter % 10;
+}
+
 function increaseScore(lineCount) {
   const scoreTable = [0, 100, 300, 500, 800];
-  let currentScore = +score.textContent;
-  score.textContent = currentScore + (scoreTable[lineCount] * level);
+  score.textContent = +score.textContent + (scoreTable[lineCount] * +level.textContent);
 }
 
 function assignTetromino() {
@@ -101,7 +113,8 @@ function assignTetromino() {
     ]
   ]
   //return tetromino from random index
-  return tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
+  return tetrominoArray[2];
+  // return tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
 }
 
 function createMatrix(x, y) {
