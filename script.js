@@ -2,7 +2,7 @@
 TODO
 fix detect collision x when piece is above screen
   -take y exception out of function and put it before function call
-increase speed with score
+increase speed with level
 game over when reach the top
 tetromino preview
 store session leader board in local memory
@@ -143,11 +143,10 @@ function endGame() {
 
 
 function detectCollision(arena, player) {
-  if (player.pos.y < 0) return;
   const [t, p] = [player.tetromino, player.pos];
   for (let y = 0; y < t.length; y++) {
     for (let x = 0; x < t[y].length; x++) {
-      if (t[y][x] !== 0 &&
+      if (y + p.y >= 0 && t[y][x] !== 0 &&
         (arena[y + p.y] &&
         arena[y + p.y][x + p.x]) !== 0) {
         return true
