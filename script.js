@@ -1,12 +1,11 @@
 /*
 TODO
-game over when reach the top
 clear row when filled
   -delete row
   -unshift new row
 score display
 increase speed with score
-instant drop (space bar)
+game over when reach the top
 
 new color for each shape
 square outlines
@@ -31,11 +30,25 @@ function dropPlayer() {
   if (detectCollision(arena, player)) {
     player.pos.y--;
     merge(arena, player);
+    clearLines();
     player.tetromino = assignTetromino();
     player.pos.y = -(player.tetromino.length);
     player.pos.x = 5;
+    dropPlayer();
   }
   dropCounter = 0;
+}
+
+function clearLines() {
+  //check if any row is all 1s
+  arena.forEach((row, y) => {
+    if (row.every(el => el === 1)) {
+      //if so, remove it and unshift an empty array
+      arena.splice(y, 1);
+      arena.unshift(new Array(arena[0].length).fill(0))
+      clearLines();
+    }
+  })
 }
 
 function assignTetromino() {
@@ -93,12 +106,18 @@ function merge(arena, player) {
   player.tetromino.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value) {
-        if (y + player.pos.y === 0) console.log('game over')
+        if (y + player.pos.y < 0) endGame();
         arena[y + player.pos.y][x + player.pos.x] = value;
       }
     })
   })
 }
+
+function endGame() {
+  console.log('game over')
+}
+
+
 
 function detectCollision(arena, player) {
   if (player.pos.y < 0) return;
@@ -164,6 +183,7 @@ function rotateTetromino(count) {
 }
 
 document.addEventListener('keydown', event => {
+  console.log(event.code);
   switch (event.code) {
     case "ArrowLeft":
       player.pos.x--;
@@ -186,6 +206,12 @@ document.addEventListener('keydown', event => {
       if (detectCollision(arena, player)) {
         event.code === "PageUp" ? rotateTetromino(1) : rotateTetromino(3);
       }
+      break;
+    case "Space":
+      while (!detectCollision(arena, player)) {
+        player.pos.y++;
+      };
+      player.pos.y--; 
       break;
   }
 });
