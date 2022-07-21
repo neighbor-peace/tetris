@@ -1,7 +1,8 @@
 /*
 TODO
-edge detection
 shape rotation function (page up, page down)
+filled arena edge detection 
+stop rotation from causing out of bounds
 new shape after collision
 game over when reach the top
 clear row when filled
@@ -125,6 +126,31 @@ function isOffScreen(player, arena) {
   
   return false;
 }
+/*
+clockwise
+1, 2, 3    7, 4. 1
+4, 5, 6 -> 8, 5, 2
+7, 8, 9    9, 6, 3
+
+ccw
+1, 2, 3    3, 6. 9
+4, 5, 6 -> 2, 5, 8
+7, 8, 9    1, 4, 7
+*/
+function rotate() {
+  //iterate through matrix rows in reverse
+  const newMatrix = [];
+  for (let y = 0; y < player.matrix.length; y++) {
+    newMatrix.push([]);
+  }
+
+  for (let y = player.matrix.length - 1; y >= 0; y--) {
+    for (let x = 0; x < player.matrix[y].length; x++) {
+      newMatrix[x].push(player.matrix[y][x]);
+    }
+  }
+  player.matrix = newMatrix;
+}
 
 document.addEventListener('keydown', event => {
   switch (event.code) {
@@ -142,6 +168,14 @@ document.addEventListener('keydown', event => {
       break;
     case "ArrowDown":
       dropPlayer();
+      break;
+    case "PageUp": //counter clockwise
+      for (let i = 1; i <=3; i++) {
+        rotate();
+      }
+      break;
+    case "PageDown": //clockwise
+      rotate();
       break;
   }
 })
