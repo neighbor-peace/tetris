@@ -4,6 +4,7 @@ score display
 increase speed with score
 game over when reach the top
 tetromino preview
+store session leader board in local memory
 
 new color for each shape
 square outlines
@@ -17,11 +18,12 @@ context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
 
 const player = {
-  pos: {x: 5, y: 0},
+  pos: {x: 3, y: 0},
   tetromino: assignTetromino(),
 }
 
-const arena = createMatrix(13, 20);
+const arena = createMatrix(10, 20);
+
 
 function dropPlayer() {
   player.pos.y++;
@@ -31,7 +33,7 @@ function dropPlayer() {
     clearLines();
     player.tetromino = assignTetromino();
     player.pos.y = -(player.tetromino.length);
-    player.pos.x = 5;
+    player.pos.x = 3;
     dropPlayer();
   }
   dropCounter = 0;
