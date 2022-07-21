@@ -1,8 +1,7 @@
 /*
 TODO
-shape rotation function (page up, page down)
 filled arena edge detection 
-stop rotation from causing out of bounds
+
 new shape after collision
 game over when reach the top
 clear row when filled
@@ -114,31 +113,36 @@ function dropPlayer() {
 }
 
 function isOffScreen(player, arena) {
-  console.log('test');
+  const correction = {
+    axis: null,
+    direction: null
+  }
   const [m, o] = [player.matrix, player.pos];
   for (let y = 0; y < m.length; y++) {
     for (let x = 0; x < m[y].length; x++) {
       //if value is 1, check that it's in bounds
       //if not, return false
-      if (m[y][x] && (o.x + x < 0 || o.x + x >= arena[0].length)) return true;
+      if (m[y][x]) {
+        if (x + o.x < 0) {
+          correction.axis = 'x';
+          correction.direction = 1;
+        } else if (x + o.x >= arena[0].length) {
+          correction.axis = 'x';
+          correction.direction = -1;
+        } else if (y + o.y < 0) {
+          correction.axis = 'y';
+          correction.direction = -1
+        } else if (y + o.y >= arena.length) {
+          correction.axis = 'y';
+          correction.direction = -1
+        }
+      }
     }
   }
-  
-  return false;
+  return correction.axis ? correction : false;
 }
-/*
-clockwise
-1, 2, 3    7, 4. 1
-4, 5, 6 -> 8, 5, 2
-7, 8, 9    9, 6, 3
 
-ccw
-1, 2, 3    3, 6. 9
-4, 5, 6 -> 2, 5, 8
-7, 8, 9    1, 4, 7
-*/
 function rotate() {
-  //iterate through matrix rows in reverse
   const newMatrix = [];
   for (let y = 0; y < player.matrix.length; y++) {
     newMatrix.push([]);
@@ -169,14 +173,26 @@ document.addEventListener('keydown', event => {
     case "ArrowDown":
       dropPlayer();
       break;
-    case "PageUp": //counter clockwise
+    case "PageUp": { //counter clockwise
       for (let i = 1; i <=3; i++) {
         rotate();
       }
+      let correction = isOffScreen(player, arena);
+      while (correction) {
+        player.pos[correction.axis] += correction.direction;
+        correction = isOffScreen(player, arena);
+      }
       break;
-    case "PageDown": //clockwise
+    }
+    case "PageDown": {//clockwise
       rotate();
+      let correction = isOffScreen(player, arena);
+      while (correction) {
+        player.pos[correction.axis] += correction.direction;
+        correction = isOffScreen(player, arena);
+      }
       break;
+    }
   }
 })
 
