@@ -1,7 +1,10 @@
 /*
 TODO
-game over when reach the top
 tetromino preview
+update ui 
+  -leaderboard
+  -buttons for retry, pause, etc.
+game over when reach the top
 store session leader board in local memory
 
 new color for each shape
@@ -24,6 +27,7 @@ const arena = createMatrix(10, 20);
 
 
 function dropPlayer() {
+  if (gameOver) return;
   player.pos.y++;
   if (detectCollision(arena, player)) {
     player.pos.y--;
@@ -125,15 +129,20 @@ function merge(arena, player) {
   player.tetromino.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value) {
-        if (y + player.pos.y < 0) endGame();
+        if (y + player.pos.y < 0) {
+          endGame();
+          return;
+        }
         arena[y + player.pos.y][x + player.pos.x] = value;
       }
     })
   })
 }
 
+let gameOver = false;
 function endGame() {
   console.log('game over')
+  gameOver = true;
 }
 
 
@@ -182,7 +191,7 @@ function update(time = 0) {
     dropPlayer();
   }
   draw();
-  requestAnimationFrame(update);
+  if (!gameOver) requestAnimationFrame(update);
 }
 
 function rotateTetromino(count) {
