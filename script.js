@@ -16,12 +16,11 @@ const context = canvas.getContext('2d');
 context.scale(20, 20);
 context.fillStyle = '#000';
 context.fillRect(0, 0, canvas.width, canvas.height);
-
+const score = document.getElementById('score');
 const player = {
   pos: {x: 3, y: 0},
   tetromino: assignTetromino(),
 }
-
 const arena = createMatrix(10, 20);
 
 
@@ -40,15 +39,26 @@ function dropPlayer() {
 }
 
 function clearLines() {
+  if (!arena.some(row => row.every(el => el === 1))) return;
+  let lineCount = 0;
+  const newArena = new Array(arena.length).fill([]);
   //check if any row is all 1s
-  arena.forEach((row, y) => {
-    if (row.every(el => el === 1)) {
-      //if so, remove it and unshift an empty array
+  for (let y = arena.length - 1; y >= 0; y--) {
+    if (arena[y].every(el => el === 1)) {
+      lineCount++;
       arena.splice(y, 1);
-      arena.unshift(new Array(arena[0].length).fill(0))
-      clearLines();
     }
-  })
+  }
+  for (let i = 1; i <= lineCount; i++) {
+    arena.unshift(new Array(arena[0].length).fill(0));
+  }
+  increaseScore(lineCount)
+}
+let level = 1;
+function increaseScore(lineCount) {
+  const scoreTable = [0, 100, 300, 500, 800];
+  let currentScore = +score.textContent;
+  score.textContent = currentScore + (scoreTable[lineCount] * level);
 }
 
 function assignTetromino() {
@@ -183,7 +193,6 @@ function rotateTetromino(count) {
 }
 
 document.addEventListener('keydown', event => {
-  console.log(event.code);
   switch (event.code) {
     case "ArrowLeft":
       player.pos.x--;
