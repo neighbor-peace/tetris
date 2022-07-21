@@ -1,11 +1,9 @@
 /*
 TODO
-clear row when filled
-  -delete row
-  -unshift new row
 score display
 increase speed with score
 game over when reach the top
+tetromino preview
 
 new color for each shape
 square outlines
@@ -211,7 +209,8 @@ document.addEventListener('keydown', event => {
       while (!detectCollision(arena, player)) {
         player.pos.y++;
       };
-      player.pos.y--; 
+      player.pos.y--;
+      dropPlayer(); 
       break;
   }
 });
