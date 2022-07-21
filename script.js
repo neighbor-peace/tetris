@@ -24,7 +24,19 @@ const player = {
   tetromino: assignTetromino(),
 }
 
-const arena = createMatrix(12, 20);
+const arena = createMatrix(13, 20);
+
+function dropPlayer() {
+  player.pos.y++;
+  if (detectCollision(arena, player)) {
+    player.pos.y--;
+    merge(arena, player);
+    player.tetromino = assignTetromino();
+    player.pos.y = -(player.tetromino.length);
+    player.pos.x = 5;
+  }
+  dropCounter = 0;
+}
 
 function assignTetromino() {
   //create array of tetrominos
@@ -39,20 +51,20 @@ function assignTetromino() {
       [1,1]
     ],
     [
-      [0,0,1,0,0],
-      [0,0,1,0,0],
-      [0,0,1,0,0],
-      [0,0,1,0,0]
+      [0,1,0],
+      [0,1,0],
+      [0,1,0],
+      [0,1,0]
     ],
     [
-      [0,1,0,0],
-      [0,1,1,0],
-      [0,0,1,0]
+      [1,0,0],
+      [1,1,0],
+      [0,1,0]
     ],
     [
-      [0,0,1,0],
-      [0,1,1,0],
-      [0,1,0,0]
+      [0,1,0],
+      [1,1,0],
+      [1,0,0]
     ],
     [
       [0,1,0],
@@ -81,6 +93,7 @@ function merge(arena, player) {
   player.tetromino.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value) {
+        if (y + player.pos.y === 0) console.log('game over')
         arena[y + player.pos.y][x + player.pos.x] = value;
       }
     })
@@ -88,12 +101,13 @@ function merge(arena, player) {
 }
 
 function detectCollision(arena, player) {
-  const [m, o] = [player.tetromino, player.pos];
-  for (let y = 0; y < m.length; y++) {
-    for (let x = 0; x < m[y].length; x++) {
-      if (m[y][x] !== 0 &&
-        (arena[y + o.y] &&
-        arena[y + o.y][x + o.x]) !== 0) {
+  if (player.pos.y < 0) return;
+  const [t, p] = [player.tetromino, player.pos];
+  for (let y = 0; y < t.length; y++) {
+    for (let x = 0; x < t[y].length; x++) {
+      if (t[y][x] !== 0 &&
+        (arena[y + p.y] &&
+        arena[y + p.y][x + p.x]) !== 0) {
         return true
         }
     }
@@ -104,7 +118,7 @@ function detectCollision(arena, player) {
 function drawMatrix(matrix, offset = {x: 0, y: 0}) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
-      if (value !== 0) {
+      if (value !== 0 && y + offset.y >= 0) {
         context.fillStyle = 'red';
         context.fillRect(x + offset.x, y + offset.y, 1, 1)
       }
@@ -132,18 +146,6 @@ function update(time = 0) {
   }
   draw();
   requestAnimationFrame(update);
-}
-
-function dropPlayer() {
-  player.pos.y++;
-  if (detectCollision(arena, player)) {
-    player.pos.y--;
-    merge(arena, player);
-    player.pos.y = 0;
-    player.pos.x = 5;
-    player.tetromino = assignTetromino();
-  }
-  dropCounter = 0;
 }
 
 function rotateTetromino(count) {
