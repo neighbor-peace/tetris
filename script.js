@@ -210,30 +210,45 @@ function rotateTetromino(count) {
 }
 
 document.addEventListener('keydown', event => {
+  console.log(event.code)
   switch (event.code) {
     case "ArrowLeft":
+    case "KeyA":
       player.pos.x--;
       if (detectCollision(arena, player)) {
         player.pos.x++;
       }
       break;
     case "ArrowRight":
+    case "KeyD":
       player.pos.x++;
       if (detectCollision(arena, player)) {
         player.pos.x--;
       }
       break;
     case "ArrowDown":
+    case "KeyS":
       dropPlayer();
       break;
+    case "KeyQ":
     case "PageUp": //counter clockwise
-    case "PageDown": //clockwise
-      event.code === "PageUp" ? rotateTetromino(3) : rotateTetromino(1);
+    case "KeyE":
+    case "PageDown": {//clockwise
+      let direction;
+      if (event.code === "PageUp" || event.code === "KeyQ") {
+        direction = "ccw";
+      } else {
+        direction = "cw"
+      }
+      direction === "ccw" ? rotateTetromino(3) : rotateTetromino(1);
       if (detectCollision(arena, player)) {
-        event.code === "PageUp" ? rotateTetromino(1) : rotateTetromino(3);
+        direction === "ccw" ? rotateTetromino(1) : rotateTetromino(3);
       }
       break;
+    }
     case "Space":
+    case "ArrowUp":
+    case "KeyW":
       while (!detectCollision(arena, player)) {
         player.pos.y++;
       };
