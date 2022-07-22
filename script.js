@@ -1,13 +1,11 @@
 /*
 TODO
+grid background
 update ui 
   -leaderboard
-  -buttons for retry, pause, etc.
+  -buttons for retry, theme select.
 game over when reach the top
 store session leader board in local memory
-
-square outlines
-theme select
 */
 
 const canvas = document.getElementById('tetris');
