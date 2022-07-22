@@ -15,16 +15,39 @@ theme select
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 context.scale(20, 20);
-context.fillStyle = '#000';
-context.fillRect(0, 0, canvas.width, canvas.height);
+// context.fillStyle = '#000';
+// context.fillRect(0, 0, canvas.width, canvas.height);
 const score = document.getElementById('score');
 const level = document.getElementById('level');
 const player = {
   pos: {x: 3, y: 0},
   tetromino: assignTetromino(),
+  preview: assignTetromino()
 }
 const arena = createMatrix(10, 20);
 
+function draw() {
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, 10, 20);
+  context.fillStyle = '#4a4a4a';
+  context.fillRect(10, 0, 7, 20);
+  context.fillStyle = '#000';
+  context.fillRect(11, 1, 5, 6);
+  drawMatrix(player.preview, {x: 12, y: 2});
+  drawMatrix(arena);
+  drawMatrix(player.tetromino, player.pos)
+}
+
+function drawMatrix(matrix, offset = {x: 0, y: 0}) {
+  matrix.forEach((row, y) => {
+    row.forEach((value, x) => {
+      if (value !== 0 && y + offset.y >= 0) {
+        context.fillStyle = 'red';
+        context.fillRect(x + offset.x, y + offset.y, 1, 1)
+      }
+    })
+  })
+}
 
 function dropPlayer() {
   if (gameOver) return;
@@ -33,7 +56,8 @@ function dropPlayer() {
     player.pos.y--;
     merge(arena, player);
     clearLines();
-    player.tetromino = assignTetromino();
+    player.tetromino = player.preview;
+    player.preview = assignTetromino();
     player.pos.y = -(player.tetromino.length);
     player.pos.x = 3;
     dropPlayer();
@@ -90,17 +114,17 @@ function assignTetromino() {
       [0,1,0],
       [0,1,0],
       [0,1,0],
-      [0,1,0]
-    ],
-    [
-      [1,0,0],
-      [1,1,0],
-      [0,1,0]
-    ],
-    [
       [0,1,0],
-      [1,1,0],
-      [1,0,0]
+    ],
+    [
+      [0,1,0,0],
+      [0,1,1,0],
+      [0,0,1,0]
+    ],
+    [
+      [0,0,1,0],
+      [0,1,1,0],
+      [0,1,0,0]
     ],
     [
       [0,1,0],
@@ -159,24 +183,6 @@ function detectCollision(arena, player) {
     }
   }
   return false;
-}
-
-function drawMatrix(matrix, offset = {x: 0, y: 0}) {
-  matrix.forEach((row, y) => {
-    row.forEach((value, x) => {
-      if (value !== 0 && y + offset.y >= 0) {
-        context.fillStyle = 'red';
-        context.fillRect(x + offset.x, y + offset.y, 1, 1)
-      }
-    })
-  })
-}
-
-function draw() {
-  context.fillStyle = '#000';
-  context.fillRect(0, 0, canvas.width, canvas.height);
-  drawMatrix(arena);
-  drawMatrix(player.tetromino, player.pos)
 }
 
 let dropCounter = 0;
