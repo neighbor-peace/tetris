@@ -65,7 +65,7 @@ function increaseLevel(lineCount) {
   lineCounter += lineCount;
   if (lineCounter >= 10) {
     level.textContent = +level.textContent + 1;
-    dropInterval -= 66; // 1000/15 (15 is highest level)
+    dropInterval /= 1.25;
   }
   lineCounter = lineCounter % 10;
 }
