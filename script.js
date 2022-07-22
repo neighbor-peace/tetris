@@ -1,13 +1,11 @@
 /*
 TODO
-tetromino preview
 update ui 
   -leaderboard
   -buttons for retry, pause, etc.
 game over when reach the top
 store session leader board in local memory
 
-new color for each shape
 square outlines
 theme select
 */
@@ -39,10 +37,11 @@ function draw() {
 }
 
 function drawMatrix(matrix, offset = {x: 0, y: 0}) {
+  const colorArray = [null, 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0 && y + offset.y >= 0) {
-        context.fillStyle = 'red';
+        context.fillStyle = colorArray[value];
         context.fillRect(x + offset.x, y + offset.y, 1, 1)
       }
     })
@@ -66,12 +65,12 @@ function dropPlayer() {
 }
 
 function clearLines() {
-  if (!arena.some(row => row.every(el => el === 1))) return;
+  if (!arena.some(row => row.every(el => el !== 0))) return;
   let lineCount = 0;
   const newArena = new Array(arena.length).fill([]);
   //check if any row is all 1s
   for (let y = arena.length - 1; y >= 0; y--) {
-    if (arena[y].every(el => el === 1)) {
+    if (arena[y].every(el => el !== 0)) {
       lineCount++;
       arena.splice(y, 1);
     }
@@ -138,7 +137,10 @@ function assignTetromino() {
     ]
   ]
   // return tetrominoArray[2]; //straight piece for testing
-  return tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
+  const color = Math.ceil(Math.random() * 7);
+  const template = tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
+  output = template.map(row => row.map(value => value === 1 ? color : 0));
+  return output;
 }
 
 function createMatrix(x, y) {
