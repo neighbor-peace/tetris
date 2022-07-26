@@ -20,26 +20,33 @@ const player = {
   tetromino: assignTetromino(),
   preview: assignTetromino()
 }
-const arena = createMatrix(10, 20);
+const arena = createMatrix(10, 20)
+
+const background = arena.map((subArr) => {
+  return subArr.map((value, i) => {
+    return i % 2 ? -1 : -2;
+  })
+});
 
 function draw() {
   context.fillStyle = '#000';
   context.fillRect(0, 0, 10, 20);
-  context.fillStyle = '#4a4a4a';
+  context.fillStyle = '#000';
   context.fillRect(10, 0, 7, 20);
   context.fillStyle = '#000';
   context.fillRect(11, 1, 5, 6);
   drawMatrix(player.preview, {x: 12, y: 2});
+  drawMatrix(background);
   drawMatrix(arena);
   drawMatrix(player.tetromino, player.pos)
 }
 
 function drawMatrix(matrix, offset = {x: 0, y: 0}) {
-  const colorArray = [null, 'red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'violet']
+  const colorArray = [null, '#FFC700', '#E86C0C', '#FF0000', '#AD0CE8', '#1224FF', '#353535', '#303030']
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0 && y + offset.y >= 0) {
-        context.fillStyle = colorArray[value];
+        context.fillStyle = colorArray.at(value);
         context.fillRect(x + offset.x, y + offset.y, 1, 1)
       }
     })
@@ -65,7 +72,6 @@ function dropPlayer() {
 function clearLines() {
   if (!arena.some(row => row.every(el => el !== 0))) return;
   let lineCount = 0;
-  const newArena = new Array(arena.length).fill([]);
   //check if any row is all 1s
   for (let y = arena.length - 1; y >= 0; y--) {
     if (arena[y].every(el => el !== 0)) {
@@ -135,7 +141,7 @@ function assignTetromino() {
     ]
   ]
   // return tetrominoArray[2]; //straight piece for testing
-  const color = Math.ceil(Math.random() * 7);
+  const color = Math.ceil(Math.random() * 5);
   const template = tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
   output = template.map(row => row.map(value => value === 1 ? color : 0));
   return output;
@@ -216,7 +222,6 @@ function rotateTetromino(count) {
 }
 
 document.addEventListener('keydown', event => {
-  console.log(event.code)
   switch (event.code) {
     case "ArrowLeft":
     case "KeyA":
