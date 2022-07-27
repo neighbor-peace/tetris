@@ -1,6 +1,5 @@
 /*
 TODO
-update font to retro style
 track lines
 set preview to seperate canvas
 -center canvas in stylized div (black background)
@@ -18,7 +17,6 @@ position game arena in middle
 
 styling
 pause button
-let player toggle guidelines on
 include line count
 animate line clears (inside out, remove one pixel at a time)
 flash background on a tetris 
@@ -28,6 +26,7 @@ fading popups for when scoring
 */
 const score = document.getElementById('score');
 const level = document.getElementById('level');
+const lines = document.getElementById('lines');
 
 let player;
 let arena;
@@ -53,11 +52,6 @@ initialize();
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 context.scale(20, 20);
-const guideLines = arena.map((subArr) => {
-  return subArr.map((value, i) => {
-    return i % 2 ? -1 : -2;
-  })
-});
 const buttons = document.querySelectorAll('button');
 buttons.forEach((button) => {
   button.addEventListener('click', handleButton);
@@ -71,7 +65,6 @@ function draw() {
   context.fillStyle = '#333';
   context.fillRect(10, 0, 10, 20);
   drawMatrix(player.preview, {x: 12, y: 2});
-  // drawMatrix(guideLines);
   drawMatrix(arena);
   drawMatrix(player.tetromino, player.pos)
 }
