@@ -26,18 +26,23 @@ flash background on a tetris
 const score = document.getElementById('score');
 const level = document.getElementById('level');
 
-let 
-  player,
-  arena;
+let player;
+let arena;
+let selectedColor = 'standard';
+let lineCounter = 0;
+let gameOver = false;
+
+
 
 function initialize() {
   console.log('initializing')
   arena = createMatrix(10, 20);
   player = {
-    pos: {x: 3, y: 0},
+    pos: {x: 3, y: null},
     tetromino: assignTetromino(),
     preview: assignTetromino()
   }
+  player.pos.y = player.tetromino.length > 2 ? -1 : 0;
   level.textContent = 1;
   score.textContent = 0;
 }
@@ -69,7 +74,6 @@ function draw() {
   drawMatrix(player.tetromino, player.pos)
 }
 
-let selectedColor = 'standard';
 
 function handleButton(e) {
   const button = e.target;
@@ -130,8 +134,9 @@ function dropPlayer() {
     clearLines();
     player.tetromino = player.preview;
     player.preview = assignTetromino();
-    player.pos.y = -(player.tetromino.length);
+    player.pos.y = player.tetromino.length > 2 ? -3 : -2;
     player.pos.x = 3;
+    dropPlayer();
     dropPlayer();
   }
   dropCounter = 0;
@@ -154,7 +159,6 @@ function clearLines() {
   increaseLevel(lineCount);
 }
 
-let lineCounter = 0;
 function increaseLevel(lineCount) {
   lineCounter += lineCount;
   if (lineCounter >= 10) {
@@ -181,30 +185,27 @@ function assignTetromino() {
       [1,1]
     ],
     [
-      [0,1,0],
-      [0,1,0],
-      [0,1,0],
-      [0,1,0],
+      [0,0,0,0],
+      [1,1,1,1],
+      [0,0,0,0]
     ],
     [
-      [0,1,0,0],
-      [0,1,1,0],
-      [0,0,1,0]
-    ],
-    [
-      [0,0,1,0],
-      [0,1,1,0],
-      [0,1,0,0]
-    ],
-    [
-      [0,1,0],
-      [0,1,0],
-      [1,1,0],
-    ],
-    [
-      [0,1,0],
-      [0,1,0],
       [0,1,1],
+      [1,1,0]
+    ],
+    [
+      [1,1,0],
+      [0,1,1]
+    ],
+    [
+      [0,0,0],
+      [1,1,1],
+      [0,0,1]
+    ],
+    [
+      [0,0,0],
+      [1,1,1],
+      [1,0,0]
     ]
   ]
   // return tetrominoArray[2]; //straight piece for testing
@@ -236,7 +237,6 @@ function merge(arena, player) {
   })
 }
 
-let gameOver = false;
 function endGame() {
   console.log('game over')
   gameOver = true;
@@ -261,7 +261,6 @@ function detectCollision(arena, player) {
 let dropCounter = 0;
 let dropInterval = 1000;
 let lastTime = 0;
-
 function update(time = 0) {
   console.log('updating')
   const deltaTime = time - lastTime;
