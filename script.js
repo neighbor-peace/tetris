@@ -1,5 +1,6 @@
 /*
 TODO
+spawn pieces horizontally and on screen
 update ui 
   -leaderboard
 store session leader board in local memory
@@ -17,31 +18,35 @@ position game arena in middle
 
 styling
 pause button
-let player select theme after game over
+let player toggle guidelines on
+include line count
+animate line clears (inside out, remove one pixel at a time)
+flash background on a tetris 
 */
+const score = document.getElementById('score');
+const level = document.getElementById('level');
+
 let 
-  score,
-  level,
   player,
   arena;
 
 function initialize() {
   console.log('initializing')
-  
-  score = document.getElementById('score');
-  level = document.getElementById('level');
   arena = createMatrix(10, 20);
   player = {
     pos: {x: 3, y: 0},
     tetromino: assignTetromino(),
     preview: assignTetromino()
   }
+  level.textContent = 1;
+  score.textContent = 0;
 }
 initialize();
+
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 context.scale(20, 20);
-const background = arena.map((subArr) => {
+const guideLines = arena.map((subArr) => {
   return subArr.map((value, i) => {
     return i % 2 ? -1 : -2;
   })
@@ -50,12 +55,16 @@ const buttons = document.querySelectorAll('button');
 buttons.forEach((button) => {
   button.addEventListener('click', handleButton);
 });
-const previewArea = createMatrix(7, 20).map(subArr => subArr.map(val => -2))
+const previewArea = createMatrix(7, 20);
 
 function draw() {
-  drawMatrix(previewArea, {x: 10, y: 0})
+  // drawMatrix(previewArea, {x: 10, y: 0})
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, 10, 20);
+  context.fillStyle = '#333';
+  context.fillRect(10, 0, 10, 20);
   drawMatrix(player.preview, {x: 12, y: 2});
-  drawMatrix(background);
+  // drawMatrix(guideLines);
   drawMatrix(arena);
   drawMatrix(player.tetromino, player.pos)
 }
@@ -79,30 +88,34 @@ function handleButton(e) {
 
 
 function drawMatrix(matrix, offset = {x: 0, y: 0}) {
-  //switch off of value of selectedColor
-  let colorArray;
-  switch (selectedColor) {
-    case 'standard':
-      colorArray = [null, '#FFC700', '#E86C0C', '#FF0000', '#AD0CE8', '#1224FF', '#353535', '#303030']; //standard
-      break;
-    case 'cold':
-      colorArray = [null, '#0024FF', '#005BFF', '#009BDF', '#00C8FF', '#00FEFF', '#353535', '#303030']; //cold
-      break;
-    case 'warm':
-      colorArray = [null, '#FFCC0D', '#FF7326', '#FF194D', '#BF2669', '#702A8C', '#353535', '#303030']; //warm
-      break;
-    case 'pastel':
-      colorArray = [null, '#FF9C59', '#E87151', '#FF6A67', '#E85EFF', '#E851AC', '#353535', '#303030']; //pastel
-      break;
-    case 'sunset':
-      colorArray = [null, '#F2CE1B', '#F2BB16', '#F27405', '#BF4904', '#360259', '#353535', '#303030']; //sunset
-      break;
-  }
+  const colorMatrix = [
+    //usa
+    [null, '#c15447', '#5250fd', '#fffeff'],
+    //blue
+    [null, '#5d5dfd', '#7bbafe', '#fcfeff'], 
+    //green
+    [null, '#299d19', '#9ddb25', '#fcfffb'],
+    //soviet
+    [null, '#716f73', '#be4438', '#FFD8D8'],
+    //purple
+    [null, '#ae40d6', '#f277ff', '#fffdff'],
+    //cool
+    [null, '#504efc', '#74e850', '#fefffd'],
+    //pastel
+    [null,'#c04192', '#5ee396', '#fdfeff'],
+    //pastel cool
+    [null, '#a8a6fe', '#61e299', '#fffefd'],
+    //gold
+    [null, '#c35045', '#eaaa44', '#FFD8D8'],
+    //dark cool
+    [null, '#7d1e59', '#8640ff', '#b9a3de']
+  ]
+  const colorArray = colorMatrix[(level.textContent - 1) % 10]
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0 && y + offset.y >= 0) {
         context.fillStyle = colorArray.at(value);
-        context.fillRect(x + offset.x, y + offset.y, 1, 1)
+        context.fillRect(x + offset.x, y + offset.y, 1, 1);
       }
     })
   })
@@ -143,11 +156,10 @@ function clearLines() {
 
 let lineCounter = 0;
 function increaseLevel(lineCount) {
-  if (+level.textContent >= 15) return;
   lineCounter += lineCount;
   if (lineCounter >= 10) {
     level.textContent = +level.textContent + 1;
-    dropInterval /= 1.25;
+    dropInterval /= 1.1;
   }
   lineCounter = lineCounter % 10;
 }
@@ -196,7 +208,7 @@ function assignTetromino() {
     ]
   ]
   // return tetrominoArray[2]; //straight piece for testing
-  const color = Math.ceil(Math.random() * 5);
+  const color = Math.ceil(Math.random() * 3);
   const template = tetrominoArray[Math.floor(Math.random() * tetrominoArray.length)];
   output = template.map(row => row.map(value => value === 1 ? color : 0));
   return output;
