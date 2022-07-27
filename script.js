@@ -1,10 +1,12 @@
 /*
 TODO
-track lines
 set preview to seperate canvas
 -center canvas in stylized div (black background)
 update ui 
 store session leader board in local memory
+add sound
+-theme music
+-toggle button
 
 Nametris
 Leaderboard of names with social security numbers
@@ -13,7 +15,7 @@ name level
 
 
 increase size
-position game arena in middle
+position game fixedPieces in middle
 
 styling
 pause button
@@ -29,29 +31,34 @@ const level = document.getElementById('level');
 const lines = document.getElementById('lines');
 
 let player;
-let arena;
-let lineCounter = 0;
-let gameOver = false;
+let fixedPieces;
+let lineCounter;
+let gameOver;
 
-
-
+//variables that must be reset to start a new game
 function initialize() {
   console.log('initializing')
-  arena = createMatrix(10, 20);
+  fixedPieces = createMatrix(10, 20);
   player = {
     pos: {x: 3, y: null},
     tetromino: assignTetromino(),
     preview: assignTetromino()
-  }
+  };
   player.pos.y = player.tetromino.length > 2 ? -1 : 0;
   level.textContent = 1;
   score.textContent = 0;
+  lines.textContent = 0;
+  lineCounter = 0;
+  gameOver = false;
 }
 initialize();
 
-const canvas = document.getElementById('tetris');
-const context = canvas.getContext('2d');
-context.scale(20, 20);
+const arenaCanvas = document.getElementById('tetris');
+const arena = arenaCanvas.getContext('2d');
+arena.scale(20, 20);
+const previewCanvas = document.getElementById('preview');
+const preview = previewCanvas.getContext('2d');
+preview.scale(20, 20);
 const buttons = document.querySelectorAll('button');
 buttons.forEach((button) => {
   button.addEventListener('click', handleButton);
@@ -59,26 +66,24 @@ buttons.forEach((button) => {
 const previewArea = createMatrix(7, 20);
 
 function draw() {
-  // drawMatrix(previewArea, {x: 10, y: 0})
-  context.fillStyle = '#000';
-  context.fillRect(0, 0, 10, 20);
-  context.fillStyle = '#333';
-  context.fillRect(10, 0, 10, 20);
-  drawMatrix(player.preview, {x: 12, y: 2});
-  drawMatrix(arena);
-  drawMatrix(player.tetromino, player.pos)
+  arena.fillStyle = '#000';
+  arena.fillRect(0, 0, 10, 20);
+  preview.fillStyle = '#000';
+  preview.fillRect(0, 0, 6, 4)
+  drawMatrix(preview, player.preview, {
+    x: player.preview[0].length === 2 ? 2 : 1,
+    y: player.preview.length === 2 ? 1 : 0
+  });
+  drawMatrix(arena, fixedPieces);
+  drawMatrix(arena, player.tetromino, player.pos)
 }
 
 
 function handleButton(e) {
   const button = e.target;
   switch (button.className) {
-    case 'theme-select':
-      selectedColor = button.value;
-      break;
     case 'retry':
       console.log('retry');
-      gameOver = false;
       initialize();
       update();
       break;
@@ -86,7 +91,7 @@ function handleButton(e) {
 }
 
 
-function drawMatrix(matrix, offset = {x: 0, y: 0}) {
+function drawMatrix(canvas, matrix, offset = {x: 0, y: 0}) {
   const colorMatrix = [
     //usa
     [null, '#c15447', '#5250fd', '#fffeff'],
@@ -113,8 +118,8 @@ function drawMatrix(matrix, offset = {x: 0, y: 0}) {
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0 && y + offset.y >= 0) {
-        context.fillStyle = colorArray.at(value);
-        context.fillRect(x + offset.x, y + offset.y, 1, 1);
+        canvas.fillStyle = colorArray.at(value);
+        canvas.fillRect(x + offset.x, y + offset.y, 1, 1);
       }
     })
   })
@@ -123,9 +128,9 @@ function drawMatrix(matrix, offset = {x: 0, y: 0}) {
 function dropPlayer() {
   if (gameOver) return;
   player.pos.y++;
-  if (detectCollision(arena, player)) {
+  if (detectCollision(fixedPieces, player)) {
     player.pos.y--;
-    merge(arena, player);
+    merge(fixedPieces, player);
     clearLines();
     player.tetromino = player.preview;
     player.preview = assignTetromino();
@@ -138,17 +143,17 @@ function dropPlayer() {
 }
 
 function clearLines() {
-  if (!arena.some(row => row.every(el => el !== 0))) return;
+  if (!fixedPieces.some(row => row.every(el => el !== 0))) return;
   let lineCount = 0;
   //check if any row is all 1s
-  for (let y = arena.length - 1; y >= 0; y--) {
-    if (arena[y].every(el => el !== 0)) {
+  for (let y = fixedPieces.length - 1; y >= 0; y--) {
+    if (fixedPieces[y].every(el => el !== 0)) {
       lineCount++;
-      arena.splice(y, 1);
+      fixedPieces.splice(y, 1);
     }
   }
   for (let i = 1; i <= lineCount; i++) {
-    arena.unshift(new Array(arena[0].length).fill(0));
+    fixedPieces.unshift(new Array(fixedPieces[0].length).fill(0));
   }
   increaseScore(lineCount);
   increaseLevel(lineCount);
@@ -219,7 +224,7 @@ function createMatrix(x, y) {
   return matrix;
 }
 
-function merge(arena, player) {
+function merge(fixedPieces, player) {
   player.tetromino.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value) {
@@ -227,7 +232,7 @@ function merge(arena, player) {
           endGame();
           return;
         }
-        arena[y + player.pos.y][x + player.pos.x] = value;
+        fixedPieces[y + player.pos.y][x + player.pos.x] = value;
       }
     })
   })
@@ -240,13 +245,13 @@ function endGame() {
 
 
 
-function detectCollision(arena, player) {
+function detectCollision(fixedPieces, player) {
   const [t, p] = [player.tetromino, player.pos];
   for (let y = 0; y < t.length; y++) {
     for (let x = 0; x < t[y].length; x++) {
       if (y + p.y >= 0 && t[y][x] !== 0 &&
-        (arena[y + p.y] &&
-        arena[y + p.y][x + p.x]) !== 0) {
+        (fixedPieces[y + p.y] &&
+        fixedPieces[y + p.y][x + p.x]) !== 0) {
         return true
         }
     }
@@ -284,7 +289,7 @@ function rotateTetromino(count) {
   }
   let offset = 1;
   const pos = player.pos.x;
-  while (detectCollision(arena, player)) {
+  while (detectCollision(fixedPieces, player)) {
     player.pos.x += offset;
     offset = -(offset + (offset > 0 ? 1 : -1));
     if (offset > player.tetromino[0].length) {
@@ -298,13 +303,13 @@ document.addEventListener('keydown', event => {
   switch (event.code) {
     case "KeyA":
       player.pos.x--;
-      if (detectCollision(arena, player)) {
+      if (detectCollision(fixedPieces, player)) {
         player.pos.x++;
       }
       break;
     case "KeyD":
       player.pos.x++;
-      if (detectCollision(arena, player)) {
+      if (detectCollision(fixedPieces, player)) {
         player.pos.x--;
       }
       break;
@@ -316,13 +321,13 @@ document.addEventListener('keydown', event => {
       let direction;
       direction = event.code === "PageUp" || event.code === "KeyQ" ? "ccw" : "cw";
       direction === "ccw" ? rotateTetromino(3) : rotateTetromino(1);
-      if (detectCollision(arena, player)) {
+      if (detectCollision(fixedPieces, player)) {
         direction === "ccw" ? rotateTetromino(1) : rotateTetromino(3);
       }
       break;
     }
     case "KeyW":
-      while (!detectCollision(arena, player)) {
+      while (!detectCollision(fixedPieces, player)) {
         player.pos.y++;
       };
       player.pos.y--;
