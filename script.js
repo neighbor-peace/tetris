@@ -152,6 +152,7 @@ function clearLines() {
   }
   increaseScore(lineCount);
   increaseLevel(lineCount);
+  lines.textContent = +lines.textContent + lineCount;
 }
 
 function increaseLevel(lineCount) {
@@ -295,28 +296,23 @@ function rotateTetromino(count) {
 
 document.addEventListener('keydown', event => {
   switch (event.code) {
-    case "ArrowLeft":
     case "KeyA":
       player.pos.x--;
       if (detectCollision(arena, player)) {
         player.pos.x++;
       }
       break;
-    case "ArrowRight":
     case "KeyD":
       player.pos.x++;
       if (detectCollision(arena, player)) {
         player.pos.x--;
       }
       break;
-    case "ArrowDown":
     case "KeyS":
       dropPlayer();
       break;
-    case "KeyQ":
-    case "PageUp": //counter clockwise
-    case "KeyE":
-    case "PageDown": {//clockwise
+    case "KeyQ": //counter-clockwise
+    case "KeyE": {//clockwise
       let direction;
       direction = event.code === "PageUp" || event.code === "KeyQ" ? "ccw" : "cw";
       direction === "ccw" ? rotateTetromino(3) : rotateTetromino(1);
@@ -325,8 +321,6 @@ document.addEventListener('keydown', event => {
       }
       break;
     }
-    case "Space":
-    case "ArrowUp":
     case "KeyW":
       while (!detectCollision(arena, player)) {
         player.pos.y++;
