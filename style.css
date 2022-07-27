@@ -2,8 +2,64 @@ body {
   background-color: black;
   font-family: 'Press Start 2P', cursive;
   color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-canvas {
+#tetris {
+  height: 90vh;
+}
+
+button {
+  background-color: black;
+  color: white;
+  font-family: inherit;
+  cursor: pointer;
+  font-size: 1.5em;
+  font-weight: bold;
+  text-align: center;
+  padding: 10px;
+}
+
+div.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#game-container {
+  display: flex;
+}
+
+#info-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+button,
+#tetris,
+.info {
+  border-style: solid;
   border: 5px solid white;
+}
+
+.info,
+#next {
+  margin: 0px;
+  padding: 5px;
+}
+
+.mid,
+button.retry {
+  margin: -5px 0px 0px -5px;
+}
+
+.top {
+  margin-left: -5px;
+}
+
+#instructions {
+  margin-right: 20px;
 }

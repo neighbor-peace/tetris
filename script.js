@@ -1,9 +1,12 @@
 /*
 TODO
-set preview to seperate canvas
--center canvas in stylized div (black background)
-update ui 
-store session leader board in local memory
+
+styling
+-increase size
+-center
+-position info to right
+animate line clears (inside out, remove one pixel at a time)
+flash background on a tetris 
 add sound
 -theme music
 -toggle button
@@ -12,19 +15,11 @@ Nametris
 Leaderboard of names with social security numbers
 name points
 name level
-
-
-increase size
-position game fixedPieces in middle
-
-styling
-pause button
-include line count
-animate line clears (inside out, remove one pixel at a time)
-flash background on a tetris 
 fading popups for when scoring
   -nice <name> clear!
   -<name>tris!
+store session leader board in local memory
+pause button
 */
 const score = document.getElementById('score');
 const level = document.getElementById('level');

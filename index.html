@@ -34,24 +34,28 @@
     <meta name="msapplication-TileImage" content="https://tetris.com/assets/images/favicon/ms-icon-144x144.png">
   </head>
   <body>
-    <div id="arena-container">
+    <div id="game-container">
+      <div id="instructions">
+        <h3>Controls</h3>
+        <p>
+          Move: A / D<br/>
+          Rotate: Q / E<br/>
+          Soft Drop: S<br/>
+          Hard Drop: W
+        </p>
+      </div>
       <canvas id="tetris" width="200" height="400"></canvas>
+      <div id="info-container">
+        <h2 class="info top">Score: <span id="score">0</span></h2>
+        <h2 class="info mid">Lines: <span id="lines">0</span></h2>
+        <div class="info mid">
+          <h2 id="next">Next</h2>
+          <canvas id="preview" width="120" height="80">Preview</canvas>
+        </div>
+        <h2 class="info mid">Level: <span id="level">1</span></h2>
+        <button class="retry">Retry</button>
+      </div>
     </div>
-    <h2>Score: <span id="score">0</span></h2>
-    <h2>Lines: <span id="lines">0</span></h2>
-    <canvas id="preview" width="120" height="80">Preview</canvas>
-    <h2>Level: <span id="level">1</span></h2>
-  
-    <button class="retry">Retry</button>
-    <h3>Controls</h3>
-    <p>
-      Move left: A<br/>
-      Move right: D<br/>
-      Rotate clockwise: E<br/>
-      Move counter-clockwise: Q<br/>
-      Soft Drop: S<br/>
-      Hard Drop: W
-    </p>
     <script src="script.js" async defer></script>
   </body>
 </html>
