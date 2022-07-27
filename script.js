@@ -1,15 +1,13 @@
 /*
 TODO
 
-styling
--increase size
--center
--position info to right
+add music
+-toggle button
+
+
 animate line clears (inside out, remove one pixel at a time)
 flash background on a tetris 
-add sound
--theme music
--toggle button
+sound effects
 
 Nametris
 Leaderboard of names with social security numbers
@@ -330,4 +328,27 @@ document.addEventListener('keydown', event => {
       break;
   }
 });
+
+// Audio
+const bgMusic = new Audio('sounds/tetris-theme--gameboy.mp3');
+bgMusic.loop = true;
+
+const musicButton = document.getElementById('music-button');
+musicButton.addEventListener('click', playTheme);
+
+function playTheme(e) {
+  console.log(e.target.className)
+  const status = e.target.className;
+  if (status === 'paused') {
+    e.target.className = 'playing';
+    e.target.textContent = 'Pause Music';
+    bgMusic.play();
+  }
+  else if (status === 'playing') {
+    e.target.className = 'paused';
+    e.target.textContent = 'Play Music';
+    bgMusic.pause();
+  }
+}
+
 update();
