@@ -1,6 +1,5 @@
 /*
 TODO
-grid background
 update ui 
   -leaderboard
   -buttons for retry, theme select.
@@ -21,28 +20,63 @@ const player = {
   preview: assignTetromino()
 }
 const arena = createMatrix(10, 20)
-
 const background = arena.map((subArr) => {
   return subArr.map((value, i) => {
     return i % 2 ? -1 : -2;
   })
 });
+const buttons = document.querySelectorAll('button');
+buttons.forEach((button) => {
+  button.addEventListener('click', handleButton);
+});
+const previewArea = createMatrix(7, 20).map(subArr => subArr.map(val => -2))
 
 function draw() {
-  context.fillStyle = '#000';
-  context.fillRect(0, 0, 10, 20);
-  context.fillStyle = '#000';
-  context.fillRect(10, 0, 7, 20);
-  context.fillStyle = '#000';
-  context.fillRect(11, 1, 5, 6);
+  drawMatrix(previewArea, {x: 10, y: 0})
   drawMatrix(player.preview, {x: 12, y: 2});
   drawMatrix(background);
   drawMatrix(arena);
   drawMatrix(player.tetromino, player.pos)
 }
 
+let selectedColor = 'standard';
+
+function handleButton(e) {
+  const button = e.target;
+  switch (button.className) {
+    case 'theme-select':
+      selectedColor = button.value;
+      break;
+    case 'retry':
+      restartGame();
+      break;
+  }
+}
+
+function restartGame() {
+  
+}
+
 function drawMatrix(matrix, offset = {x: 0, y: 0}) {
-  const colorArray = [null, '#FFC700', '#E86C0C', '#FF0000', '#AD0CE8', '#1224FF', '#353535', '#303030']
+  //switch off of value of selectedColor
+  let colorArray;
+  switch (selectedColor) {
+    case 'standard':
+      colorArray = [null, '#FFC700', '#E86C0C', '#FF0000', '#AD0CE8', '#1224FF', '#353535', '#303030']; //standard
+      break;
+    case 'cold':
+      colorArray = [null, '#0024FF', '#005BFF', '#009BDF', '#00C8FF', '#00FEFF', '#353535', '#303030']; //cold
+      break;
+    case 'warm':
+      colorArray = [null, '#FFCC0D', '#FF7326', '#FF194D', '#BF2669', '#702A8C', '#353535', '#303030']; //warm
+      break;
+    case 'pastel':
+      colorArray = [null, '#FF9C59', '#E87151', '#FF6A67', '#E85EFF', '#E851AC', '#353535', '#303030']; //pastel
+      break;
+    case 'sunset':
+      colorArray = [null, '#F2CE1B', '#F2BB16', '#F27405', '#BF4904', '#360259', '#353535', '#303030']; //sunset
+      break;
+  }
   matrix.forEach((row, y) => {
     row.forEach((value, x) => {
       if (value !== 0 && y + offset.y >= 0) {
