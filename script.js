@@ -3,6 +3,21 @@ TODO
 update ui 
   -leaderboard
 store session leader board in local memory
+
+Nametris
+Leaderboard of names with social security numbers
+name points
+name level
+fading popups for when scoring
+  -nice <name> clear!
+  -<name>tris!
+
+increase size
+position game arena in middle
+
+styling
+pause button
+let player select theme after game over
 */
 let 
   score,
@@ -260,6 +275,16 @@ function rotateTetromino(count) {
     }
     player.tetromino = newTetromino;
   }
+  let offset = 1;
+  const pos = player.pos.x;
+  while (detectCollision(arena, player)) {
+    player.pos.x += offset;
+    offset = -(offset + (offset > 0 ? 1 : -1));
+    if (offset > player.tetromino[0].length) {
+      player.pos.x = pos;
+      return;
+    }
+  }
 }
 
 document.addEventListener('keydown', event => {
@@ -287,11 +312,7 @@ document.addEventListener('keydown', event => {
     case "KeyE":
     case "PageDown": {//clockwise
       let direction;
-      if (event.code === "PageUp" || event.code === "KeyQ") {
-        direction = "ccw";
-      } else {
-        direction = "cw"
-      }
+      direction = event.code === "PageUp" || event.code === "KeyQ" ? "ccw" : "cw";
       direction === "ccw" ? rotateTetromino(3) : rotateTetromino(1);
       if (detectCollision(arena, player)) {
         direction === "ccw" ? rotateTetromino(1) : rotateTetromino(3);
