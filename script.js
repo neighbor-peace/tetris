@@ -6,20 +6,28 @@ update ui
 game over when reach the top
 store session leader board in local memory
 */
+let 
+  score,
+  level,
+  player,
+  arena;
 
+function initialize() {
+  console.log('initializing')
+  
+  score = document.getElementById('score');
+  level = document.getElementById('level');
+  arena = createMatrix(10, 20);
+  player = {
+    pos: {x: 3, y: 0},
+    tetromino: assignTetromino(),
+    preview: assignTetromino()
+  }
+}
+initialize();
 const canvas = document.getElementById('tetris');
 const context = canvas.getContext('2d');
 context.scale(20, 20);
-// context.fillStyle = '#000';
-// context.fillRect(0, 0, canvas.width, canvas.height);
-const score = document.getElementById('score');
-const level = document.getElementById('level');
-const player = {
-  pos: {x: 3, y: 0},
-  tetromino: assignTetromino(),
-  preview: assignTetromino()
-}
-const arena = createMatrix(10, 20)
 const background = arena.map((subArr) => {
   return subArr.map((value, i) => {
     return i % 2 ? -1 : -2;
@@ -48,14 +56,14 @@ function handleButton(e) {
       selectedColor = button.value;
       break;
     case 'retry':
-      restartGame();
+      console.log('retry');
+      gameOver = false;
+      initialize();
+      update();
       break;
   }
 }
 
-function restartGame() {
-  
-}
 
 function drawMatrix(matrix, offset = {x: 0, y: 0}) {
   //switch off of value of selectedColor
@@ -230,6 +238,7 @@ let dropInterval = 1000;
 let lastTime = 0;
 
 function update(time = 0) {
+  console.log('updating')
   const deltaTime = time - lastTime;
   lastTime = time;
   dropCounter += deltaTime;
@@ -302,5 +311,4 @@ document.addEventListener('keydown', event => {
       break;
   }
 });
-
-update()
+update();
