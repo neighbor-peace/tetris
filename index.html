@@ -11,6 +11,10 @@
     <meta name="description" content="README.md">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="style.css">
+    <!-- Google font  -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <!-- favicon stuff -->
     <link rel="apple-touch-icon" sizes="57x57" href="https://tetris.com/assets/images/favicon/xapple-icon-57x57.png.pagespeed.ic.PdjVWtemZL.webp">
     <link rel="apple-touch-icon" sizes="60x60" href="https://tetris.com/assets/images/favicon/xapple-icon-60x60.png.pagespeed.ic.s4inmdF3LF.webp">
@@ -33,27 +37,21 @@
     <div id="arena-container">
       <canvas id="tetris" width="340" height="400"></canvas>
     </div>
-    <div>Score: <span id="score">0</span></div>
-    <div>Level: <span id="level">1</span></div>
-    <ul id="theme-select--container">
-      <li><button class="theme-select" value="standard">Standard</button></li>
-      <li><button class="theme-select" value="cold">Cold</button></li>
-      <li><button class="theme-select" value="warm">Warm</button></li>
-      <li><button class="theme-select" value="pastel">Pastel</button></li>
-      <li><button class="theme-select" value="sunset">Sunset</button></li>
-    </ul>
+    <h2>Score: <span id="score">0</span></h2>
+    <h2>Lines: <span id="lines">0</span></h2>
+    <canvas id="preview" width="120" height="80">Preview</canvas>
+    <h2>Level: <span id="level">1</span></h2>
   
     <button class="retry">Retry</button>
-
-    <div class="leaderboard--container">
-      <h3 class="leaderboard--header"></h3>
-      <div class="leaderboard-id--container">
-        <div>123-45-678</div>
-      </div>
-      <div class="leaderboard-score--container">
-        <div>10,000</div>
-      </div>
-    </div>
+    <h3>Controls</h3>
+    <p>
+      Move left: A or Left Arrow<br/>
+      Move right: D or Right Arrow<br/>
+      Rotate clockwise: E or Page Down<br/>
+      Move counter-clockwise: Q or Page Up<br/>
+      Soft Drop: S or Down Arrow<br/>
+      Hard Drop: W or Up Arrow or Space Bar
+    </p>
     <script src="script.js" async defer></script>
   </body>
 </html>

@@ -1,17 +1,17 @@
 /*
 TODO
-spawn pieces horizontally and on screen
+update font to retro style
+track lines
+set preview to seperate canvas
+-center canvas in stylized div (black background)
 update ui 
-  -leaderboard
 store session leader board in local memory
 
 Nametris
 Leaderboard of names with social security numbers
 name points
 name level
-fading popups for when scoring
-  -nice <name> clear!
-  -<name>tris!
+
 
 increase size
 position game arena in middle
@@ -22,13 +22,15 @@ let player toggle guidelines on
 include line count
 animate line clears (inside out, remove one pixel at a time)
 flash background on a tetris 
+fading popups for when scoring
+  -nice <name> clear!
+  -<name>tris!
 */
 const score = document.getElementById('score');
 const level = document.getElementById('level');
 
 let player;
 let arena;
-let selectedColor = 'standard';
 let lineCounter = 0;
 let gameOver = false;
 
