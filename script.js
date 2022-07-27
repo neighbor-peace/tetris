@@ -2,8 +2,6 @@
 TODO
 update ui 
   -leaderboard
-  -buttons for retry, theme select.
-game over when reach the top
 store session leader board in local memory
 */
 let 
