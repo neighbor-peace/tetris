@@ -6,3 +6,5 @@
 - Draw using the canvas element
 - Animate using requestAnimationFrame()
 - Play music using HTMLMediaElement
+## Try It Using the Link Below
+https://neighbor-peace.github.io/tetris/
