@@ -1,24 +1,4 @@
-/*
-TODO
 
-add music
--toggle button
-
-
-animate line clears (inside out, remove one pixel at a time)
-flash background on a tetris 
-sound effects
-
-Nametris
-Leaderboard of names with social security numbers
-name points
-name level
-fading popups for when scoring
-  -nice <name> clear!
-  -<name>tris!
-store session leader board in local memory
-pause button
-*/
 const score = document.getElementById('score');
 const level = document.getElementById('level');
 const lines = document.getElementById('lines');
